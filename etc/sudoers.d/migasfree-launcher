@@ -1,0 +1,2 @@
+ALL ALL=(root) NOPASSWD: /usr/bin/migasfree --update
+ALL ALL=(root) NOPASSWD: /usr/bin/migasfree-upload

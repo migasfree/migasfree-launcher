@@ -1,0 +1,8 @@
+migasfree-launcher (1.0-1) unstable; urgency=low
+
+  * Se crea el fichero /etc/apt/apt.conf.d/99-migasfree-launcher para modificar
+    ciertas opciones en la instalación de paquetes.
+  * Los comandos migasfree-upload y migasfree --update se añaden a sudoers para
+    subir paquetes y poder actualizar el sistema con cualquier usuario.
+
+ -- Alberto Gacías <alberto@migasfree.org>  Fri, 14 Jun 2013 22:24:47 +0200

@@ -1,0 +1,14 @@
+Source: migasfree-launcher
+Section: utils
+Priority: extra
+Maintainer: Alberto Gacías <alberto@migasfree.org>
+Build-Depends: debhelper (>= 8.0.0)
+Standards-Version: 3.9.3
+Homepage: https://github.com/agacias/migasfree-launcher
+
+Package: migasfree-launcher
+Architecture: all
+Pre-Depends: migasfree-client, sudo
+Depends: ${misc:Depends}, ${python:Depends}
+Description: migasfree launcher
+ migasfree launcher in graphic session

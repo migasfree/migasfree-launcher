@@ -1,0 +1,3 @@
+Dpkg::Options {"--force-confdef"; "--force-confold";};
+Apt::Get::AllowUnauthenticated 1;
+Debug::pkgProblemResolver 1;
