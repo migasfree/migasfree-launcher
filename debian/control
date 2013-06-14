@@ -9,6 +9,6 @@ Homepage: https://github.com/agacias/migasfree-launcher
 Package: migasfree-launcher
 Architecture: all
 Pre-Depends: migasfree-client, sudo
-Depends: ${misc:Depends}, ${python:Depends}
+Depends: ${misc:Depends}
 Description: migasfree launcher
  migasfree launcher in graphic session
