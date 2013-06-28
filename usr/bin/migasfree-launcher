@@ -1,0 +1,9 @@
+#!/bin/bash
+_FIRST=/var/tmp/migasfree/first-tags.conf
+
+if [ -f $_FIRST ] ; then
+  _TAGS="$(cat $_FIRST)" 
+  xterm -T "MIGASFREE-TAGS" -e "sudo /usr/bin/migasfree-tags --set $_TAGS && rm -f $_FIRST && echo 'Process Completed.' && sleep 3" 
+else
+  sudo /usr/bin/migasfree --update
+fi
