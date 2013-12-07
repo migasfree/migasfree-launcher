@@ -1,5 +1,9 @@
 #!/bin/bash
 _FIRST=/var/tmp/migasfree/first-tags.conf
+_USER=`python -c "from migasfree_client import utils;print utils.get_graphic_user(utils.get_graphic_pid()[0])"`
+
+# block update-notifier
+mv /etc/xdg/autostart/update-notifier.desktop /etc/xdg/autostart/update-notifier.desktop.migasfree-launcher >/dev/null || :
 
 if [ -f $_FIRST ] ; then
   _TAGS="$(cat $_FIRST)"
@@ -7,3 +11,6 @@ if [ -f $_FIRST ] ; then
 else
   sudo /usr/bin/migasfree --update
 fi
+
+# run update-notifier
+su -c "/usr/bin/update-notifier" $_USER &
