@@ -1,3 +1,9 @@
+migasfree-launcher (1.2-1) unstable; urgency=low
+
+  * added migasfree-label.desktop
+
+ -- Alberto Gacías <alberto@migasfree.org>  Tue, 17 Dec 2013 21:21:47 +0200
+
 migasfree-launcher (1.1-1) unstable; urgency=low
 
   * migasfree-client and update-notifier not in the same time.
