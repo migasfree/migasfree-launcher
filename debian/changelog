@@ -1,3 +1,9 @@
+migasfree-launcher (1.3-1) unstable; urgency=low
+
+  * added to sudoers "/usr/sbin/dmidecode --string system-uuid"" (close #3)
+
+ -- Alberto Gacías <alberto@migasfree.org>  Thu, 19 Dec 2013 21:59:47 +0200
+
 migasfree-launcher (1.2-1) unstable; urgency=low
 
   * added migasfree-label.desktop
