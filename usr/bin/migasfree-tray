@@ -104,7 +104,7 @@ class SystrayIconApp(object):
         if options.support:
             self.support = options.support
         else:
-            self.support = 'http://soporte.vitalinux.org'
+            self.support = ''
 
         self.is_force_upgrade = (options.force_upgrade == True)
 
@@ -287,8 +287,8 @@ class SystrayIconApp(object):
 
         self.menu_force_upgrade.set_sensitive(False)
         self.console.timeout_id = GObject.timeout_add(
-            50, 
-            self.console.on_timeout, 
+            50,
+            self.console.on_timeout,
             None
         )
 
@@ -330,7 +330,7 @@ class SystrayIconApp(object):
         console.textbuffer.place_cursor(_iterator)
         console.textbuffer.insert(_iterator, _utf8conv(line))
         console.textview.scroll_to_mark(
-            console.textbuffer.get_insert(), 
+            console.textbuffer.get_insert(),
             0.1, False, 0, 0
         )
 
@@ -359,7 +359,7 @@ if __name__ == "__main__":
         "--support",
         "-s",
         action="store",
-        default="http://soporte.vitalinux.org"
+        default=""
     )
 
     options, arguments = parser.parse_args()
