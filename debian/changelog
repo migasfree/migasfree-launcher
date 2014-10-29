@@ -1,3 +1,9 @@
+migasfree-launcher (1.5-1) unstable; urgency=low
+
+  * Removed auto-launch in schema com.ubuntu.update-notifier (close #12)
+
+ -- Alberto Gacías <alberto@migasfree.org>  Tue, 29 Oct 2014 17:10:47 +0200
+
 migasfree-launcher (1.4-1) unstable; urgency=low
 
   * Added dmidecode -t 0 to sudoers (close #4)
