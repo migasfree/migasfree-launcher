@@ -1,3 +1,9 @@
+migasfree-launcher (1.6-1) unstable; urgency=low
+
+  * BugFix: Two Tags selected in create-iso (close #14)
+
+ -- Alberto Gacías <alberto@migasfree.org>  Tue, 28 Jun 2015 09:00:47 +0200
+
 migasfree-launcher (1.5-1) unstable; urgency=low
 
   * Removed auto-launch in schema com.ubuntu.update-notifier (close #12)

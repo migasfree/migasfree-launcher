@@ -32,7 +32,7 @@ fi
 
 if [ "$_IS_FIRST_RUN" = "1" ] ; then
   _TAGS="$(cat $_FIRST)"
-  if [ -z $_TAGS ] ; then
+  if [ -z "$_TAGS" ] ; then
     _TAGS='""'
   fi
   if ! [ "$SUDO_UID" = "999" ] ; then # No se esta probando el LiveCD
