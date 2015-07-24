@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2014 Alberto Gacías, Jose Antonio Chavarría
+# Copyright (c) 2014-2015 Alberto Gacías, Jose Antonio Chavarría
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -21,7 +21,8 @@
 
 __author__ = ['Alberto Gacías', 'Jose Antonio Chavarría']
 __license__ = 'GPLv3'
-__version__ = '1.3'
+__version__ = '1.4'
+__copyright__ = '(C) 2010-2015 migasfree team'
 
 import os
 import sys
@@ -30,6 +31,7 @@ import locale
 import subprocess
 import webbrowser
 import optparse
+import time
 
 import gettext
 _ = gettext.gettext
@@ -41,6 +43,20 @@ from gi.repository import (
     Gdk,
     AppIndicator3 as AppIndicator,
 )
+
+from migasfree_client.utils import execute
+from migasfree_client.network import get_gateway
+
+WAIT_IP_TIMEOUT = 120  # 2 min
+
+
+def has_ip_address():
+    _cont = WAIT_IP_TIMEOUT
+    while (get_gateway() is None or get_gateway() == '') and _cont > 0:
+        time.sleep(1)
+        _cont -= 1
+
+    return (get_gateway() != '' and get_gateway() is not None)
 
 
 class Console(Gtk.Window):
@@ -166,10 +182,10 @@ class SystrayIconApp(object):
 
         self.menu.append(Gtk.SeparatorMenuItem())
 
-        _menu_console= Gtk.ImageMenuItem(_('Consola'))
+        _menu_console = Gtk.ImageMenuItem(_('Consola'))
         _menu_console.set_image(self.get_image("migasfree-console"))
         _menu_console.show()
-        _menu_console.connect('activate',self.show_console)
+        _menu_console.connect('activate', self.show_console)
         self.menu.append(_menu_console)
 
         _menu_mode_console = Gtk.CheckMenuItem(_('Mostrar consola siempre'))
@@ -194,7 +210,8 @@ class SystrayIconApp(object):
 
         self.menu.append(Gtk.SeparatorMenuItem())
 
-        _about = Gtk.MenuItem(_('Acerca de'))
+        _about = Gtk.ImageMenuItem(_('Acerca de'))
+        _about.set_image(self.get_image(Gtk.STOCK_DIALOG_INFO))
         _about.show()
         _about.connect('activate', self.show_about)
         self.menu.append(_about)
@@ -244,9 +261,9 @@ class SystrayIconApp(object):
         _about_dialog.set_logo_icon_name('migasfree')
         _about_dialog.set_name(__file__)
         _about_dialog.set_version(__version__)
-        _about_dialog.set_copyright("(C) 2010-2014 migasfree team")
+        _about_dialog.set_copyright(__copyright__)
         _about_dialog.set_comments(_("Migasfree Systray"))
-        _about_dialog.set_authors(['Alberto Gacías', 'Jose Antonio Chavarría'])
+        _about_dialog.set_authors(__author__)
         _about_dialog.set_website("http://migasfree.org/")
         _about_dialog.set_website_label("migasfree.org")
 
@@ -335,6 +352,10 @@ class SystrayIconApp(object):
         )
 
 if __name__ == "__main__":
+    if not has_ip_address():
+        print(_('No network access'))
+        sys.exit(1)
+
     parser = optparse.OptionParser(
         description=__file__,
         prog=__file__,
