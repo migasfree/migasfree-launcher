@@ -146,6 +146,7 @@ class SystrayIconApp(object):
 
         self.update_system()
         GObject.timeout_add(self.interval, self.update_system)
+        GObject.timeout_add(10000, self.check_reboot)
 
     def choose_icon(self):
         _icon = 'migasfree-idle-dark'
@@ -285,6 +286,36 @@ class SystrayIconApp(object):
 
         return True
 
+    def cmd_reboot(self):
+        ret, _, _ = execute('which ck-list-sessions')
+        if ret == 0:
+            cmd = 'dbus-send --system --print-reply --dest=org.freedesktop.ConsoleKit /org/freedesktop/ConsoleKit/Manager org.freedesktop.ConsoleKit.Manager.Restart'
+        else:
+            cmd = 'dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 "org.freedesktop.login1.Manager.Reboot" boolean:true'
+
+        execute(cmd, interactive=True, verbose=True)
+
+    def check_reboot(self):
+        if not self.is_upgrading and os.path.isfile('/var/run/reboot-required'):
+            self.tray.set_icon(Gtk.STOCK_DIALOG_WARNING)
+
+            _menu_reboot = Gtk.ImageMenuItem(_('Reiniciar ordenador para terminar de actualizar el sistema'))
+            _menu_reboot.set_image(
+                self.get_image(Gtk.STOCK_DIALOG_WARNING)
+            )
+            _menu_reboot.show()
+            _menu_reboot.connect('activate', self.reboot_computer)
+            self.menu.append(_menu_reboot)
+
+            self.menu_force_upgrade.set_sensitive(False)
+
+            return False
+
+        return True
+
+    def reboot_computer(self, widget):
+        self.cmd_reboot()
+
     def show_tags(self, widget):
         self.run(self.CMD_TAGS)
 
@@ -384,6 +415,11 @@ if __name__ == "__main__":
     )
 
     options, arguments = parser.parse_args()
+
+    # Show update-notifier notifications
+    if os.path.isfile('/usr/bin/update-notifier'):
+        settings = Gio.Settings.new('com.ubuntu.update-notifier')
+        settings.set_boolean('auto-launch', False)
 
     GObject.threads_init()
     sia = SystrayIconApp(options)
