@@ -1,3 +1,12 @@
+migasfree-launcher (1.7-1) unstable; urgency=low
+
+  * Bugfixed import error AppIndicator3 (closes #13)
+  * Wait until 2 minutes before launch update actions if no network access
+    (closes #15)
+  * Added reboot warning if needed after system upgrade (closes #16)
+
+ -- Jose Antonio Chavarría <jachavar@gmail.com>  Fri, 24 Jul 2015 14:07:47 +0200
+
 migasfree-launcher (1.6-1) unstable; urgency=low
 
   * BugFix: Two Tags selected in create-iso (close #14)
