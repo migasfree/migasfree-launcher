@@ -4,11 +4,11 @@ Priority: extra
 Maintainer: Alberto Gacías <alberto@migasfree.org>
 Build-Depends: debhelper (>= 8.0.0)
 Standards-Version: 3.9.3
-Homepage: https://github.com/agacias/migasfree-launcher
+Homepage: https://github.com/migasfree/migasfree-launcher
 
 Package: migasfree-launcher
 Architecture: all
 Pre-Depends: migasfree-client (>=4.5), sudo
-Depends: ${misc:Depends}, ${python:Depends}
-Description: migasfree launcher
- migasfree launcher in graphic session
+Depends: ${misc:Depends}, ${python:Depends}, gir1.2-appindicator, gir1.2-gtk-30
+Description: migasfree client indicator
+ Indicator to view and control migasfree client actions
