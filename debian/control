@@ -9,6 +9,6 @@ Homepage: https://github.com/migasfree/migasfree-launcher
 Package: migasfree-launcher
 Architecture: all
 Pre-Depends: migasfree-client (>=4.5), sudo
-Depends: ${misc:Depends}, ${python:Depends}, gir1.2-appindicator, gir1.2-gtk-30
+Depends: ${misc:Depends}, ${python:Depends}, gir1.2-appindicator3-0.1, gir1.2-gtk-3.0
 Description: migasfree client indicator
  Indicator to view and control migasfree client actions
