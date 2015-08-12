@@ -45,8 +45,10 @@ from gi.repository import (
 )
 
 from migasfree_client.utils import execute
+from migasfree_client.utils import get_config
 from migasfree_client.network import get_gateway
 
+CONF_FILE = "/etc/migasfree-launcher.conf"
 WAIT_IP_TIMEOUT = 120  # 2 min
 
 
@@ -383,6 +385,10 @@ class SystrayIconApp(object):
         )
 
 if __name__ == "__main__":
+    config = get_config(CONF_FILE, 'tray')
+    if type(config) is not dict:
+        config = {}
+
     if not has_ip_address():
         print(_('No network access'))
         sys.exit(1)
@@ -399,19 +405,19 @@ if __name__ == "__main__":
         "-a",
         action="store_true",
         help=_('Force Upgrade'),
-        default=False
+        default=config.get('force_upgrade', False),
     )
     parser.add_option(
         "--interval",
         "-i",
         type="int",
-        default=24  # hours
+        default=config.get('interval', 24),  # hours
     )
     parser.add_option(
         "--support",
         "-s",
         action="store",
-        default=""
+        default=config.get('support', ""),
     )
 
     options, arguments = parser.parse_args()
