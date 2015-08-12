@@ -15,6 +15,7 @@ if [ -f /usr/bin/jockey-gtk ] ; then
 fi
 
 _FIRST=/var/tmp/migasfree/first-tags.conf
+_CHANGE_NODE=/var/tmp/migasfree/change-node.conf
 _USER=`python -c "from migasfree_client import utils;print utils.get_graphic_user(utils.get_graphic_pid()[0])"`
 
 _PYTHON_CODE="from migasfree_client.utils import get_config
@@ -30,28 +31,60 @@ else
   _IS_FIRST_RUN="0"
 fi
 
-if [ "$_IS_FIRST_RUN" = "1" ] ; then
+# execute prerun scripts
+if [ -d /usr/share/migasfree-launcher/prerun.d ]; then
+  for i in /usr/share/migasfree-launcher/prerun.d/*.sh; do
+    if [ -r $i ]; then
+      . $i
+    fi
+  done
+  unset i
+fi
+
+
+if [ -f $_FIRST ] ; then
   _TAGS="$(cat $_FIRST)"
   if [ -z "$_TAGS" ] ; then
     _TAGS='""'
   fi
-  if ! [ "$SUDO_UID" = "999" ] ; then # No se esta probando el LiveCD
+  if [ "$SUDO_UID" = "999" ] ; then # Se esta probando el LiveCD
     echo "--------------------------------"
+    echo "Se está probando el LiveCD..."
+  else
+    echo "--------------------------------"
+    echo "Y"|LC_ALL=C migasfree --register
     echo "Informar de los tags: $_TAGS"
     /usr/bin/migasfree-tags --communicate $_TAGS
     echo "--------------------------------"
     echo "Actualizando..."
     /usr/bin/migasfree --update
-    mv $_FIRST $_FIRST.save
+    echo "--------------------------------"
   fi
-
 else
+  if [ -f $_CHANGE_NODE ] ; then
+    echo "Y"|LC_ALL=C migasfree --register
+    migasfree-tags --communicate $(cat $_CHANGE_NODE) || :
+    mv $_CHANGE_NODE $_CHANGE_NODE.save || :
+  fi
   echo "--------------------------------"
   echo "Actualizando el sistema ..."
   /usr/bin/migasfree --update
   echo "--------------------------------"
 fi
 
+# execute postrun scripts
+if [ -d /usr/share/migasfree-launcher/postrun.d ]; then
+  for i in /usr/share/migasfree-launcher/postrun.d/*.sh; do
+    if [ -r $i ]; then
+      . $i
+    fi
+  done
+  unset i
+fi
+
+if [ -f $_FIRST ] ; then
+    mv $_FIRST $_FIRST.save
+fi
 
 # run update-notifier
 if [ -f /usr/bin/update-notifier ] ; then
