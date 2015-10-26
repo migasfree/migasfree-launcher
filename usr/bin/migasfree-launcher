@@ -1,6 +1,6 @@
 #!/bin/bash
 
-stop cron > /dev/null
+service cron stop > /dev/null
 
 # block update-notifier
 if [ -f /usr/bin/update-notifier ] ; then
@@ -100,4 +100,4 @@ if [ -f /usr/bin/jockey-gtk ]; then
   fi
 fi
 
-start cron > /dev/null
+service cron start > /dev/null
