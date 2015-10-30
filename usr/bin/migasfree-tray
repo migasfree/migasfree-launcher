@@ -21,7 +21,7 @@
 
 __author__ = ['Alberto Gacías', 'Jose Antonio Chavarría']
 __license__ = 'GPLv3'
-__version__ = '1.4'
+__version__ = '1.10'
 __copyright__ = '(C) 2010-2015 migasfree team'
 
 import os
@@ -153,8 +153,11 @@ class SystrayIconApp(object):
     def choose_icon(self):
         _icon = 'migasfree-idle-dark'
 
-        _settings = Gtk.Settings.get_default()
-        if _settings.get_property('gtk-theme-name') == 'Radiance':
+        _menu = Gtk.Menu()
+        _bg_color = _menu.get_style_context().get_background_color(
+            Gtk.StateFlags.NORMAL
+        )
+        if (_bg_color.red + _bg_color.green + _bg_color.blue) / 3 > .5:
             _icon = 'migasfree-idle-light'
 
         return _icon
