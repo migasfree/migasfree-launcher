@@ -1,3 +1,11 @@
+migasfree-launcher (1.10-1) unstable; urgency=low
+
+  * Refactorized choose_icon method to adapt systray icon to light and dark
+    background colors (closes #22)
+  * Changed icons format to plane SVG (closes #23)
+
+ -- Jose Antonio Chavarría <jachavar@gmail.com>  Fri, 30 Oct 2015 09:22:47 +0200
+
 migasfree-launcher (1.9-1) unstable; urgency=low
 
   * BugFix: Failed to connect to socket /com/ubuntu/upstart (close #21)
