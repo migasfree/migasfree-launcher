@@ -7,48 +7,12 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.0"
    width="47.999992"
    height="48"
-   id="svg2"
-   sodipodi:version="0.32"
-   inkscape:version="0.48.3.1 r9886"
-   sodipodi:docname="migasfree-upgrade.svg"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape"
-   inkscape:export-filename="/home/alberto/Documentos/Documentacion/proyectos/migas/logos/migas2_1280.png"
-   inkscape:export-xdpi="359.45001"
-   inkscape:export-ydpi="359.45001"
-   version="1.0">
-  <sodipodi:namedview
-     id="base"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageopacity="0.0"
-     inkscape:pageshadow="2"
-     inkscape:zoom="10.666667"
-     inkscape:cx="23.999996"
-     inkscape:cy="24"
-     inkscape:document-units="px"
-     inkscape:current-layer="layer1"
-     showgrid="false"
-     inkscape:window-width="1024"
-     inkscape:window-height="734"
-     inkscape:window-x="50"
-     inkscape:window-y="0"
-     showborder="true"
-     borderlayer="false"
-     inkscape:showpageshadow="false"
-     inkscape:window-maximized="0" />
+   id="svg2">
   <defs
-     id="defs4">
-    <inkscape:path-effect
-       effect="bend_path"
-       id="path-effect2627"
-       bendpath="m 317.018,342.352 233.842,0"
-       prop_scale="1" />
-  </defs>
+     id="defs4" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -57,19 +21,16 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
   <g
-     id="layer1"
-     inkscape:groupmode="layer"
-     inkscape:label="Capa 1"
-     transform="translate(-409.93872,-324.46271)">
+     transform="translate(-409.93872,-324.46271)"
+     id="layer1">
     <path
-       style="fill:#ff6600;fill-opacity:1;stroke:#ff6600;stroke-width:1.66321373px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 421.36307,333.28553 -0.16381,30.71816 28.18508,-16.07163 z"
        id="path2988"
-       inkscape:connector-curvature="0" />
+       style="fill:#ff6600;fill-opacity:1;stroke:#ff6600;stroke-width:1.66321373px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
   </g>
 </svg>
