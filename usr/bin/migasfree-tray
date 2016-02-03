@@ -123,7 +123,6 @@ class SystrayIconApp(object):
     CMD_UPGRADE = "sudo migasfree-launcher"
     CMD_FORCE_UPGRADE = "sudo migasfree --update --force-upgrade"
     CMD_LABEL = "migasfree-label"
-    CMD_APPS = "migasfree-apps"
 
     FIRST_RUN = "/var/tmp/migasfree/first-tags.conf"
 
@@ -259,9 +258,6 @@ class SystrayIconApp(object):
     def show_label_id(self, widget):
         os.system(self.CMD_LABEL)
 
-    def show_apps(self, widget):
-        os.system(self.CMD_APPS)
-
     def show_support(self, widget):
         webbrowser.open(self.support)
 
@@ -328,9 +324,6 @@ class SystrayIconApp(object):
 
     def reboot_computer(self, widget):
         self.cmd_reboot()
-
-    def show_tags(self, widget):
-        self.run_command(self.CMD_TAGS)
 
     def run_command(self, command):
         self.console.textbuffer.set_text('')
