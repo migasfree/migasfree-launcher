@@ -1,3 +1,9 @@
+migasfree-launcher (1.11-1) unstable; urgency=low
+
+  * Bugfixed Xenial imports in migasfree-tray script (closes #24)
+
+ -- Jose Antonio Chavarría <jachavar@gmail.com>  Wed, 3 Feb 2016 12:53:47 +0200
+
 migasfree-launcher (1.10-1) unstable; urgency=low
 
   * Refactorized choose_icon method to adapt systray icon to light and dark
