@@ -1,7 +1,7 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2014-2015 Alberto Gacías, Jose Antonio Chavarría
+# Copyright (c) 2014-2016 Alberto Gacías, Jose Antonio Chavarría
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,14 +15,14 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
-#
-# Author: Alberto Gacías <alberto@migasfree.org>
-# Author: Jose Antonio Chavarría <jachavar@gmail.com>
 
-__author__ = ['Alberto Gacías', 'Jose Antonio Chavarría']
+__author__ = [
+    'Alberto Gacías <alberto@migasfree.org>',
+    'Jose Antonio Chavarría <jachavar@gmail.com>'
+]
 __license__ = 'GPLv3'
-__version__ = '1.10'
-__copyright__ = '(C) 2010-2015 migasfree team'
+__version__ = '1.11'
+__copyright__ = '(C) 2010-2016 migasfree team'
 
 import os
 import sys
@@ -35,6 +35,10 @@ import time
 
 import gettext
 _ = gettext.gettext
+
+from gi import require_version
+require_version('Gtk', '3.0')
+require_version('AppIndicator3', '0.1')
 
 from gi.repository import (
     Gio,
@@ -50,6 +54,7 @@ from migasfree_client.network import get_gateway
 
 CONF_FILE = "/etc/migasfree-launcher.conf"
 WAIT_IP_TIMEOUT = 120  # 2 min
+DEFAULT_INTERVAL = 24  # hours
 
 
 def has_ip_address():
@@ -66,33 +71,37 @@ class Console(Gtk.Window):
         super(Console, self).__init__()
 
         sw = Gtk.ScrolledWindow()
-        sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        sw.set_policy(
+            Gtk.PolicyType.AUTOMATIC,
+            Gtk.PolicyType.AUTOMATIC
+        )
         self.textview = Gtk.TextView()
         self.textbuffer = self.textview.get_buffer()
         self.textview.set_editable(False)
+        self.textview.set_wrap_mode(Gtk.WrapMode.WORD)
         sw.add(self.textview)
 
         self.set_title(_('Consola migasfree'))
         self.set_icon_name('migasfree')
-        self.resize(600, 400)
-        self.set_property('deletable', False)
+        self.resize(640, 420)
         self.set_decorated(True)
         self.set_border_width(10)
 
-        button = Gtk.Button(_('Ocultar'))
-        button.connect("clicked", self.on_click_hide, None)
-
-        vbox = Gtk.VBox(spacing=6)
-        vbox.pack_start(sw, expand=True, fill=True, padding=0)
+        box = Gtk.Box(spacing=6, orientation='vertical')
+        box.pack_start(sw, expand=True, fill=True, padding=0)
 
         self.progress = Gtk.ProgressBar()
-        vboxprogress = Gtk.VBox(False, 0)
-        vboxprogress.pack_start(self.progress, False, True, 0)
         self.progress.set_pulse_step(0.02)
-        vbox.pack_start(vboxprogress, False, True, 0)
+        progress_box = Gtk.Box(False, 0, orientation='vertical')
+        progress_box.pack_start(self.progress, False, True, 0)
+        box.pack_start(progress_box, expand=False, fill=True, padding=0)
 
-        vbox.pack_start(button, False, True, 0)
-        self.add(vbox)
+        button = Gtk.Button(_('Ocultar'))
+        box.pack_start(button, expand=False, fill=True, padding=0)
+        button.connect('clicked', self.on_click_hide)
+        self.connect('delete-event', self.on_click_hide)
+
+        self.add(box)
 
     def on_timeout(self, user_data):
         self.progress.pulse()
@@ -100,9 +109,14 @@ class Console(Gtk.Window):
 
     def on_click_hide(self, widget, data=None):
         self.hide()
+        return True
 
 
 class SystrayIconApp(object):
+    APP_INDICATOR_ID = 'migasfree-tray'
+    APP_NAME = 'Migasfree Systray'
+    APP_DESCRIPTION = _('Indicador para ver y controlar las acciones del cliente de migasfree')
+
     SCHEMA = "org.migasfree.console"
     SHOW_CONSOLE = "show-console"
 
@@ -117,7 +131,7 @@ class SystrayIconApp(object):
         if options.interval:
             self.interval = options.interval * 3600000
         else:
-            self.interval = 24 * 3600000
+            self.interval = DEFAULT_INTERVAL * 3600000
 
         if options.support:
             self.support = options.support
@@ -135,7 +149,7 @@ class SystrayIconApp(object):
         self.icon = self.choose_icon()
 
         self.tray = AppIndicator.Indicator.new(
-            'migasfree-tray',
+            self.APP_INDICATOR_ID,
             self.icon,
             AppIndicator.IndicatorCategory.APPLICATION_STATUS
         )
@@ -165,19 +179,9 @@ class SystrayIconApp(object):
     def make_menu(self):
         self.menu = Gtk.Menu()
 
-        # TODO
-        '''
-        _apps = Gtk.ImageMenuItem(_('Aplicaciones'))
-        _apps.set_image(self.get_image("migasfree-apps"))
-        _apps.set_sensitive(False)
-        _apps.show()
-        _apps.connect('activate', self.show_apps)
-        self.menu.append(_apps)
-
-        self.menu.append(Gtk.SeparatorMenuItem())
-        '''
-
-        self.menu_force_upgrade = Gtk.ImageMenuItem(_('Forzar actualización'))
+        self.menu_force_upgrade = Gtk.ImageMenuItem(
+            _('Forzar actualización')
+        )
         self.menu_force_upgrade.set_image(
             self.get_image("migasfree-force-upgrade")
         )
@@ -194,7 +198,9 @@ class SystrayIconApp(object):
         _menu_console.connect('activate', self.show_console)
         self.menu.append(_menu_console)
 
-        _menu_mode_console = Gtk.CheckMenuItem(_('Mostrar consola siempre'))
+        _menu_mode_console = Gtk.CheckMenuItem(
+            _('Mostrar consola siempre')
+        )
         _menu_mode_console.connect('activate', self.on_show_console)
         _menu_mode_console.set_active(self.mode_console)
         self.menu.append(_menu_mode_console)
@@ -217,7 +223,7 @@ class SystrayIconApp(object):
         self.menu.append(Gtk.SeparatorMenuItem())
 
         _about = Gtk.ImageMenuItem(_('Acerca de'))
-        _about.set_image(self.get_image(Gtk.STOCK_DIALOG_INFO))
+        _about.set_image(self.get_image('help-about'))
         _about.show()
         _about.connect('activate', self.show_about)
         self.menu.append(_about)
@@ -260,27 +266,28 @@ class SystrayIconApp(object):
         webbrowser.open(self.support)
 
     def show_about(self, widget):
-        _about_dialog = Gtk.AboutDialog()
+        about = Gtk.AboutDialog()
 
-        _about_dialog.set_destroy_with_parent(True)
-        _about_dialog.set_icon_name("migasfree")
-        _about_dialog.set_logo_icon_name('migasfree')
-        _about_dialog.set_name(__file__)
-        _about_dialog.set_version(__version__)
-        _about_dialog.set_copyright(__copyright__)
-        _about_dialog.set_comments(_("Migasfree Systray"))
-        _about_dialog.set_authors(__author__)
-        _about_dialog.set_website("http://migasfree.org/")
-        _about_dialog.set_website_label("migasfree.org")
+        about.set_destroy_with_parent(True)
+        about.set_program_name(self.APP_NAME)
+        about.set_comments(self.APP_DESCRIPTION)
+        about.set_icon_name('migasfree')
+        about.set_logo_icon_name('migasfree')
+        about.set_name(__file__)
+        about.set_version(__version__)
+        about.set_copyright(__copyright__)
+        about.set_authors(__author__)
+        about.set_website("http://migasfree.org/")
+        about.set_website_label("migasfree.org")
 
-        _about_dialog.run()
-        _about_dialog.destroy()
+        about.run()
+        about.destroy()
 
     def upgrade(self, widget):
-        self.run(self.CMD_UPGRADE)
+        self.run_command(self.CMD_UPGRADE)
 
     def force_upgrade(self, widget):
-        self.run(self.CMD_FORCE_UPGRADE)
+        self.run_command(self.CMD_FORCE_UPGRADE)
 
     def update_system(self):
         if not self.is_upgrading:
@@ -301,13 +308,14 @@ class SystrayIconApp(object):
         execute(cmd, interactive=True, verbose=True)
 
     def check_reboot(self):
-        if not self.is_upgrading and os.path.isfile('/var/run/reboot-required'):
-            self.tray.set_icon(Gtk.STOCK_DIALOG_WARNING)
+        if not self.is_upgrading \
+        and os.path.isfile('/var/run/reboot-required'):
+            self.tray.set_icon('dialog-warning')
 
-            _menu_reboot = Gtk.ImageMenuItem(_('Reiniciar ordenador para terminar de actualizar el sistema'))
-            _menu_reboot.set_image(
-                self.get_image(Gtk.STOCK_DIALOG_WARNING)
+            _menu_reboot = Gtk.ImageMenuItem(
+                _('Reiniciar ordenador para terminar de actualizar el sistema')
             )
+            _menu_reboot.set_image(self.get_image('dialog-warning'))
             _menu_reboot.show()
             _menu_reboot.connect('activate', self.reboot_computer)
             self.menu.append(_menu_reboot)
@@ -322,20 +330,20 @@ class SystrayIconApp(object):
         self.cmd_reboot()
 
     def show_tags(self, widget):
-        self.run(self.CMD_TAGS)
+        self.run_command(self.CMD_TAGS)
 
-    def run(self, command):
+    def run_command(self, command):
+        self.console.textbuffer.set_text('')
         if self.mode_console:
             self.console.show_all()
 
         thread = threading.Thread(
             target=self.read_output,
-            args=(self.console, command)
+            args=(command,)
         )
-        self.console.textbuffer.set_text("")
         thread.start()
 
-    def read_output(self, console, command):
+    def read_output(self, command):
         self.is_upgrading = True
 
         self.menu_force_upgrade.set_sensitive(False)
@@ -362,12 +370,8 @@ class SystrayIconApp(object):
             if not _line and _process.poll() != None:
                 break
 
-            _line = _line.replace("\033[92m", "")
-            _line = _line.replace("\033[91m", "")
-            _line = _line.replace("\033[32m", "")
-            _line = _line.replace("\033[0m", "")
-
-            GObject.idle_add(self.add_text_to_console, console, _line)
+            _line = self.clean_text(_line)
+            GObject.idle_add(self.add_text_to_console, _line)
 
         self.tray.set_icon(self.icon)
         self.is_upgrading = False
@@ -375,19 +379,29 @@ class SystrayIconApp(object):
         self.console.progress.set_fraction(0)
         GObject.source_remove(self.console.timeout_id)
 
-    def add_text_to_console(self, console, line):
+    def clean_text(self, text):
+        return text.replace("\033[92m", "").replace(
+            "\033[91m", ""
+        ).replace("\033[32m", "").replace("\033[0m", "")
+
+    def add_text_to_console(self, line):
         _encoding = locale.getpreferredencoding()
         _utf8conv = lambda x : unicode(x, _encoding).encode('utf8')
 
-        _iterator = console.textbuffer.get_end_iter()
-        console.textbuffer.place_cursor(_iterator)
-        console.textbuffer.insert(_iterator, _utf8conv(line))
-        console.textview.scroll_to_mark(
-            console.textbuffer.get_insert(),
+        _iterator = self.console.textbuffer.get_end_iter()
+        self.console.textbuffer.place_cursor(_iterator)
+        self.console.textbuffer.insert(_iterator, _utf8conv(line))
+        self.console.textview.scroll_to_mark(
+            self.console.textbuffer.get_insert(),
             0.1, False, 0, 0
         )
 
-if __name__ == "__main__":
+    def run(self):
+        GObject.threads_init()
+        Gtk.main()
+
+
+def main():
     config = get_config(CONF_FILE, 'tray')
     if type(config) is not dict:
         config = {}
@@ -414,17 +428,19 @@ if __name__ == "__main__":
         "--interval",
         "-i",
         type="int",
-        default=config.get('interval', 24),  # hours
+        default=config.get('interval', DEFAULT_INTERVAL),
     )
     parser.add_option(
         "--support",
         "-s",
         action="store",
-        default=config.get('support', ""),
+        default=config.get('support', ''),
     )
 
     options, arguments = parser.parse_args()
 
-    GObject.threads_init()
-    sia = SystrayIconApp(options)
-    Gtk.main()
+    SystrayIconApp(options).run()
+
+
+if __name__ == "__main__":
+    main()
