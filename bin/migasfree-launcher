@@ -1,0 +1,117 @@
+#!/bin/bash
+
+function run_scripts
+{
+    local _PATH="$1"
+
+    if [ -d "$_PATH" ]
+    then
+        for _FILE in "$_PATH"/*.sh
+        do
+            if [ -r "$_FILE" ]
+            then
+                . "$_FILE"
+            fi
+        done
+    fi
+}
+
+service cron stop > /dev/null
+
+# block update-notifier
+if [ -f /usr/bin/update-notifier ]
+then
+    chmod 000 /usr/bin/update-notifier
+    chmod 000 /etc/xdg/autostart/update-notifier.desktop || :
+fi
+
+# block jockey-gtk
+if [ -f /usr/bin/jockey-gtk ]
+then
+    chmod 000 /usr/bin/jockey-gtk
+    chmod 000 /etc/xdg/autostart/jockey-gtk.desktop || :
+fi
+
+_FIRST=/var/tmp/migasfree/first-tags.conf
+_CHANGE_NODE=/var/tmp/migasfree/change-node.conf
+_USER=$(python -c "from migasfree_client import utils; print utils.get_graphic_user(utils.get_graphic_pid()[0])")
+
+_PYTHON_CODE="from migasfree_client.utils import get_config
+from migasfree_client import settings
+config = get_config(settings.CONF_FILE, 'client')
+print config.get('server', 'localhost')
+"
+_SERVER=$(python -c "$_PYTHON_CODE")
+
+if [ -f $_FIRST ]
+then
+    _IS_FIRST_RUN="1"
+else
+    _IS_FIRST_RUN="0"
+fi
+
+# execute prerun scripts
+run_scripts /usr/share/migasfree-launcher/prerun.d
+
+if [ -f $_FIRST ]
+then
+    _TAGS="$(cat $_FIRST)"
+    if [ -z "$_TAGS" ]
+    then
+        _TAGS='""'
+    fi
+    if [ "$SUDO_UID" = "999" ]
+    then
+        echo "--------------------------------"
+        echo "It is testing LiveCD..."
+    else
+        echo "--------------------------------"
+        echo "Y" | LC_ALL=C migasfree --register
+        echo "Report tags: $_TAGS"
+        /usr/bin/migasfree-tags --communicate $_TAGS
+        echo "--------------------------------"
+        echo "Synchronizing..."
+        /usr/bin/migasfree --update
+        echo "--------------------------------"
+    fi
+else
+    if [ -f $_CHANGE_NODE ]
+    then
+        echo "--------------------------------"
+        echo "Y" | LC_ALL=C migasfree --register
+        echo "Report tags: " $(cat $_CHANGE_NODE)
+        /usr/bin/migasfree-tags --communicate $(cat $_CHANGE_NODE) || :
+        mv $_CHANGE_NODE $_CHANGE_NODE.save || :
+    fi
+    echo "--------------------------------"
+    echo "Synchronizing..."
+    /usr/bin/migasfree --update
+    echo "--------------------------------"
+fi
+
+# execute postrun scripts
+run_scripts /usr/share/migasfree-launcher/postrun.d
+
+if [ -f $_FIRST ]
+then
+    mv $_FIRST $_FIRST.save
+fi
+
+# run update-notifier
+if [ -f /usr/bin/update-notifier ]
+then
+    chmod 755 /usr/bin/update-notifier
+    exec su --login -c "/usr/bin/update-notifier --force-use-gksu" $_USER &> /dev/null &
+fi
+
+# run jockey-gtk
+if [ -f /usr/bin/jockey-gtk ]
+then
+    chmod 755 /usr/bin/jockey-gtk
+    if [ "$_IS_FIRST_RUN" = "1" ]
+    then
+        exec su --login -c "exec jockey-gtk --check" $_USER &> /dev/null &
+    fi
+fi
+
+service cron start > /dev/null

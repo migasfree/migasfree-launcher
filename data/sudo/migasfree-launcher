@@ -1,0 +1,7 @@
+ALL ALL=(root) NOPASSWD: /usr/bin/migasfree --update
+ALL ALL=(root) NOPASSWD: /usr/bin/migasfree --update --force-upgrade
+ALL ALL=(root) NOPASSWD: /usr/bin/migasfree-upload
+ALL ALL=(root) NOPASSWD: /usr/bin/migasfree-tags
+ALL ALL=(root) NOPASSWD: /usr/sbin/dmidecode --string system-uuid
+ALL ALL=(root) NOPASSWD: /usr/sbin/dmidecode -t 0
+ALL ALL=(root) NOPASSWD: /usr/bin/migasfree-launcher

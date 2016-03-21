@@ -1,0 +1,67 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-03-18 14:05+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../migasfree_indicator/indicator.py:88
+msgid "Migasfree Indicator"
+msgstr ""
+
+#: ../migasfree_indicator/indicator.py:89
+msgid "Indicator to view and control migasfree client actions"
+msgstr ""
+
+#: ../migasfree_indicator/indicator.py:153
+#: ../migasfree_indicator/indicator.py:388
+msgid "Force Upgrade"
+msgstr ""
+
+#: ../migasfree_indicator/indicator.py:165
+msgid "Console"
+msgstr ""
+
+#: ../migasfree_indicator/indicator.py:171
+msgid "Show console always"
+msgstr ""
+
+#: ../migasfree_indicator/indicator.py:178
+msgid "Identification label"
+msgstr ""
+
+#: ../migasfree_indicator/indicator.py:185
+msgid "Support"
+msgstr ""
+
+#: ../migasfree_indicator/indicator.py:193
+msgid "About"
+msgstr ""
+
+#: ../migasfree_indicator/indicator.py:281
+msgid "Restart your computer to finish updating the system"
+msgstr ""
+
+#: ../migasfree_indicator/indicator.py:374
+msgid "No network access"
+msgstr ""
+
+#: ../migasfree_indicator/console.py:41
+msgid "Migasfree Console"
+msgstr ""
+
+#: ../migasfree_indicator/console.py:56
+msgid "Hide"
+msgstr ""
