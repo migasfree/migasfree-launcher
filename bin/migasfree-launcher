@@ -1,5 +1,7 @@
 #!/bin/bash
 
+_RET=0
+
 function run_scripts
 {
     local _PATH="$1"
@@ -72,6 +74,7 @@ then
         echo "--------------------------------"
         echo "Synchronizing..."
         /usr/bin/migasfree --update
+        _RET=$?
         echo "--------------------------------"
     fi
 else
@@ -86,6 +89,7 @@ else
     echo "--------------------------------"
     echo "Synchronizing..."
     /usr/bin/migasfree --update
+    _RET=$?
     echo "--------------------------------"
 fi
 
@@ -115,3 +119,5 @@ then
 fi
 
 service cron start > /dev/null
+
+exit $_RET
