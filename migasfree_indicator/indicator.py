@@ -32,6 +32,7 @@ import subprocess
 import webbrowser
 import optparse
 import time
+import errno
 
 import gettext
 _ = gettext.gettext
@@ -116,7 +117,8 @@ class SystrayIconApp(object):
 
         self.is_upgrading = False
 
-        self.icon = self.choose_icon()
+        self.fore_color = self.get_fore_color()
+        self.icon = 'migasfree-idle-%s' % self.fore_color
 
         self.tray = AppIndicator.Indicator.new(
             self.APP_INDICATOR_ID,
@@ -134,17 +136,15 @@ class SystrayIconApp(object):
         GObject.timeout_add(self.interval, self.update_system)
         GObject.timeout_add(10000, self.check_reboot)
 
-    def choose_icon(self):
-        _icon = 'migasfree-idle-dark'
-
+    def get_fore_color(self):
         _menu = Gtk.Menu()
         _bg_color = _menu.get_style_context().get_background_color(
             Gtk.StateFlags.NORMAL
         )
         if (_bg_color.red + _bg_color.green + _bg_color.blue) / 3 > .5:
-            _icon = 'migasfree-idle-light'
+            return 'light'
 
-        return _icon
+        return 'dark'
 
     def make_menu(self):
         self.menu = Gtk.Menu()
@@ -335,11 +335,21 @@ class SystrayIconApp(object):
             _line = self.clean_text(_line)
             GObject.idle_add(self.add_text_to_console, _line)
 
-        self.tray.set_icon(self.icon)
+        self.update_tray_icon(_process.returncode)
         self.is_upgrading = False
         self.menu_force_upgrade.set_sensitive(True)
         self.console.progress.set_fraction(0)
         GObject.source_remove(self.console.timeout_id)
+
+    def update_tray_icon(self, return_code):
+        if return_code == errno.ECONNREFUSED:
+            self.icon = 'migasfree-error-%s' % self.fore_color
+        elif return_code != os.EX_OK:
+            self.icon = 'migasfree-warning-%s' % self.fore_color
+        else:
+            self.icon = 'migasfree-idle-%s' % self.fore_color
+
+        self.tray.set_icon(self.icon)
 
     def clean_text(self, text):
         return text.replace("\033[92m", "").replace(
