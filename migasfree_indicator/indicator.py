@@ -378,7 +378,7 @@ def main():
     gettext.textdomain('migasfree-launcher')
 
     config = get_config(CONF_FILE, 'indicator')
-    if type(config) is not dict:
+    if isinstance(config, dict):
         config = {}
 
     if not has_ip_address():
