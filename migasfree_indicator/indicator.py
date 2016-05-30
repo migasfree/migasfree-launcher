@@ -45,7 +45,6 @@ from gi.repository import (
     Gio,
     GObject,
     Gtk,
-    Gdk,
     AppIndicator3 as AppIndicator,
 )
 
@@ -412,7 +411,7 @@ def main():
         default=config.get('support', ''),
     )
 
-    options, arguments = parser.parse_args()
+    options, _ = parser.parse_args()
 
     SystrayIconApp(options).run()
 
