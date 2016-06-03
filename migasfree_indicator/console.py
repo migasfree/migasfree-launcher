@@ -44,6 +44,8 @@ class Console(Gtk.Window):
         self.set_decorated(True)
         self.set_border_width(10)
 
+        self.connect('delete-event', self.on_click_hide)
+
         box = Gtk.Box(spacing=6, orientation='vertical')
         box.pack_start(sw, expand=True, fill=True, padding=0)
 
@@ -52,11 +54,6 @@ class Console(Gtk.Window):
         progress_box = Gtk.Box(False, 0, orientation='vertical')
         progress_box.pack_start(self.progress, False, True, 0)
         box.pack_start(progress_box, expand=False, fill=True, padding=0)
-
-        button = Gtk.Button(_('Hide'))
-        box.pack_start(button, expand=False, fill=True, padding=0)
-        button.connect('clicked', self.on_click_hide)
-        self.connect('delete-event', self.on_click_hide)
 
         self.add(box)
 
