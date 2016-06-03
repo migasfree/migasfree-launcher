@@ -411,7 +411,7 @@ def main():
         default=config.get('support', ''),
     )
 
-    options, _ = parser.parse_args()
+    options, arguments = parser.parse_args()
 
     SystrayIconApp(options).run()
 
