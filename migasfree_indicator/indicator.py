@@ -80,7 +80,7 @@ def has_ip_address():
         time.sleep(1)
         _cont -= 1
 
-    return (get_gateway() != '' and get_gateway() is not None)
+    return get_gateway() != '' and get_gateway() is not None
 
 
 class SystrayIconApp(object):
@@ -265,15 +265,21 @@ class SystrayIconApp(object):
     def cmd_reboot(self):
         ret, _, _ = execute('which ck-list-sessions')
         if ret == 0:
-            cmd = 'dbus-send --system --print-reply --dest=org.freedesktop.ConsoleKit /org/freedesktop/ConsoleKit/Manager org.freedesktop.ConsoleKit.Manager.Restart'
+            cmd = 'dbus-send --system --print-reply '
+            '--dest=org.freedesktop.ConsoleKit '
+            '/org/freedesktop/ConsoleKit/Manager '
+            'org.freedesktop.ConsoleKit.Manager.Restart'
         else:
-            cmd = 'dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 "org.freedesktop.login1.Manager.Reboot" boolean:true'
+            cmd = 'dbus-send --system --print-reply '
+            '--dest=org.freedesktop.login1 '
+            '/org/freedesktop/login1 '
+            '"org.freedesktop.login1.Manager.Reboot" boolean:true'
 
         execute(cmd, interactive=True, verbose=True)
 
     def check_reboot(self):
         if not self.is_upgrading \
-        and os.path.isfile('/var/run/reboot-required'):
+                and os.path.isfile('/var/run/reboot-required'):
             self.tray.set_icon('dialog-warning')
 
             _menu_reboot = Gtk.ImageMenuItem(
@@ -322,13 +328,13 @@ class SystrayIconApp(object):
             stderr=subprocess.STDOUT
         )
 
-        while _process.returncode == None:
+        while _process.returncode is None:
             try:
                 _line = _process.stdout.readline()
             except:
-                pass
+                _line = ''
 
-            if not _line and _process.poll() != None:
+            if not _line and _process.poll() is not None:
                 break
 
             _line = self.clean_text(_line)
@@ -357,7 +363,7 @@ class SystrayIconApp(object):
 
     def add_text_to_console(self, line):
         _encoding = locale.getpreferredencoding()
-        _utf8conv = lambda x : unicode(x, _encoding).encode('utf8')
+        _utf8conv = lambda x: unicode(x, _encoding).encode('utf8')
 
         _iterator = self.console.textbuffer.get_end_iter()
         self.console.textbuffer.place_cursor(_iterator)
