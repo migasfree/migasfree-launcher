@@ -92,7 +92,7 @@ class SystrayIconApp(object):
     SHOW_CONSOLE = "show-console"
 
     CMD_UPGRADE = "sudo migasfree-launcher"
-    CMD_FORCE_UPGRADE = "sudo migasfree --update --force-upgrade"
+    CMD_FORCE_UPGRADE = "sudo migasfree-launcher force-upgrade"
     CMD_LABEL = "migasfree-label"
 
     FIRST_RUN = "/var/tmp/migasfree/first-tags.conf"

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-_RET=0
+# Syntax: migasfree-launcher [force-upgrade]
 
 function run_scripts
 {
@@ -17,6 +17,14 @@ function run_scripts
         done
     fi
 }
+
+_RET=0
+
+_SYNC_ARGS=""
+if [ "$1" = "force-upgrade" ]
+then
+    _SYNC_ARGS="--force-upgrade"
+fi
 
 service cron stop > /dev/null
 
@@ -73,7 +81,7 @@ then
         /usr/bin/migasfree-tags --communicate $_TAGS
         echo "--------------------------------"
         echo "Synchronizing..."
-        /usr/bin/migasfree --update
+        /usr/bin/migasfree --update "$_SYNC_ARGS"
         _RET=$?
         echo "--------------------------------"
     fi
@@ -88,7 +96,7 @@ else
     fi
     echo "--------------------------------"
     echo "Synchronizing..."
-    /usr/bin/migasfree --update
+    /usr/bin/migasfree --update "$_SYNC_ARGS"
     _RET=$?
     echo "--------------------------------"
 fi
