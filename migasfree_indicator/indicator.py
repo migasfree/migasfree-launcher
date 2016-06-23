@@ -108,7 +108,7 @@ class SystrayIconApp(object):
         else:
             self.support = ''
 
-        self.is_force_upgrade = (options.force_upgrade == True)
+        self.is_force_upgrade = (options.force_upgrade is True)
 
         self.console = Console()
         if os.path.isfile(self.FIRST_RUN):
@@ -126,7 +126,7 @@ class SystrayIconApp(object):
         )
         self.tray.set_status(AppIndicator.IndicatorStatus.ACTIVE)
         self.tray.set_attention_icon('attention_icon')
-        self.tray.set_icon(self.icon)
+        GObject.idle_add(self.tray.set_icon, self.icon)
 
         self.mode_console = self.get_console()
         self.make_menu()
@@ -135,7 +135,8 @@ class SystrayIconApp(object):
         GObject.timeout_add(self.interval, self.update_system)
         GObject.timeout_add(10000, self.check_reboot)
 
-    def get_fore_color(self):
+    @staticmethod
+    def get_fore_color():
         _menu = Gtk.Menu()
         _bg_color = _menu.get_style_context().get_background_color(
             Gtk.StateFlags.NORMAL
@@ -211,7 +212,8 @@ class SystrayIconApp(object):
         self.set_console(widget.get_active())
         self.mode_console = widget.get_active()
 
-    def get_image(self, name):
+    @staticmethod
+    def get_image(name):
         _img = Gtk.Image()
         _img.set_from_icon_name(name, Gtk.IconSize.MENU)
 
@@ -280,7 +282,7 @@ class SystrayIconApp(object):
     def check_reboot(self):
         if not self.is_upgrading \
                 and os.path.isfile('/var/run/reboot-required'):
-            self.tray.set_icon('dialog-warning')
+            GObject.idle_add(self.tray.set_icon, 'dialog-warning')
 
             _menu_reboot = Gtk.ImageMenuItem(
                 _('Restart your computer to finish updating the system')
@@ -308,6 +310,7 @@ class SystrayIconApp(object):
             target=self.read_output,
             args=(command,)
         )
+        thread.setDaemon(True)
         thread.start()
 
     def read_output(self, command):
@@ -320,7 +323,7 @@ class SystrayIconApp(object):
             None
         )
 
-        self.tray.set_icon('migasfree')
+        GObject.idle_add(self.tray.set_icon, 'migasfree')
 
         _process = subprocess.Popen(
             command.split(" "),
@@ -344,7 +347,10 @@ class SystrayIconApp(object):
         self.is_upgrading = False
         self.menu_force_upgrade.set_sensitive(True)
         self.console.progress.set_fraction(0)
-        GObject.source_remove(self.console.timeout_id)
+
+        if self.console.timeout_id:
+            GObject.source_remove(self.console.timeout_id)
+            self.console.timeout_id = 0
 
     def update_tray_icon(self, return_code):
         if return_code == errno.ECONNREFUSED:
@@ -354,9 +360,10 @@ class SystrayIconApp(object):
         else:
             self.icon = 'migasfree-idle-%s' % self.fore_color
 
-        self.tray.set_icon(self.icon)
+        GObject.idle_add(self.tray.set_icon, self.icon)
 
-    def clean_text(self, text):
+    @staticmethod
+    def clean_text(text):
         return text.replace("\033[92m", "").replace(
             "\033[91m", ""
         ).replace("\033[32m", "").replace("\033[0m", "")
