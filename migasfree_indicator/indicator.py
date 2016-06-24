@@ -155,7 +155,7 @@ class SystrayIconApp(object):
         self.menu_force_upgrade.set_image(
             self.get_image("migasfree-force-upgrade")
         )
-        self.menu_force_upgrade.set_sensitive(not self.is_upgrading)
+        GObject.idle_add(self.menu_force_upgrade.set_sensitive, not self.is_upgrading)
         self.menu_force_upgrade.show()
         self.menu_force_upgrade.connect('activate', self.force_upgrade)
         self.menu.append(self.menu_force_upgrade)
@@ -292,7 +292,7 @@ class SystrayIconApp(object):
             _menu_reboot.connect('activate', self.reboot_computer)
             self.menu.append(_menu_reboot)
 
-            self.menu_force_upgrade.set_sensitive(False)
+            GObject.idle_add(self.menu_force_upgrade.set_sensitive, False)
 
             return False
 
@@ -316,7 +316,7 @@ class SystrayIconApp(object):
     def read_output(self, command):
         self.is_upgrading = True
 
-        self.menu_force_upgrade.set_sensitive(False)
+        GObject.idle_add(self.menu_force_upgrade.set_sensitive,False)
         self.console.timeout_id = GObject.timeout_add(
             50,
             self.console.on_timeout,
@@ -345,7 +345,7 @@ class SystrayIconApp(object):
 
         self.update_tray_icon(_process.returncode)
         self.is_upgrading = False
-        self.menu_force_upgrade.set_sensitive(True)
+        GObject.idle_add(self.menu_force_upgrade.set_sensitive, True)
         self.console.progress.set_fraction(0)
 
         if self.console.timeout_id:
