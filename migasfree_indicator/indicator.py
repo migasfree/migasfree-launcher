@@ -70,7 +70,7 @@ from migasfree_client.network import get_gateway
 from .console import Console
 
 CONF_FILE = "/etc/migasfree-indicator.conf"
-WAIT_IP_TIMEOUT = 120  # 2 min
+WAIT_IP_TIMEOUT = 120  # seconds
 DEFAULT_INTERVAL = 24  # hours
 
 
@@ -137,8 +137,8 @@ class SystrayIconApp(object):
 
     @staticmethod
     def get_fore_color():
-        _menu = Gtk.Menu()
-        _bg_color = _menu.get_style_context().get_background_color(
+        _panel = Gtk.Paned()
+        _bg_color = _panel.get_style_context().get_background_color(
             Gtk.StateFlags.NORMAL
         )
         if (_bg_color.red + _bg_color.green + _bg_color.blue) / 3 > .5:
@@ -155,7 +155,10 @@ class SystrayIconApp(object):
         self.menu_force_upgrade.set_image(
             self.get_image("migasfree-force-upgrade")
         )
-        GObject.idle_add(self.menu_force_upgrade.set_sensitive, not self.is_upgrading)
+        GObject.idle_add(
+            self.menu_force_upgrade.set_sensitive,
+            not self.is_upgrading
+        )
         self.menu_force_upgrade.show()
         self.menu_force_upgrade.connect('activate', self.force_upgrade)
         self.menu.append(self.menu_force_upgrade)
