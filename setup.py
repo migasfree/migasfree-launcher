@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-# Copyright (c) 2016 Jose Antonio Chavarrí­a <jachavar@gmail.com>
+# Copyright (c) 2016-2017 Jose Antonio Chavarrí­a <jachavar@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -80,6 +80,7 @@ class InstallData(install_data):
 setup(
     name = APP_NAME,
     version = VERSION,
+    description='Indicator to view and control migasfree client actions',
     packages = find_packages(),
     data_files = [
         ('share/doc/migasfree-launcher', [
