@@ -76,7 +76,7 @@ then
         echo "It is testing LiveCD..."
     else
         echo "--------------------------------"
-        echo "Y" | LC_ALL=C migasfree --register
+        echo "Y" | LANGUAGE=C migasfree --register
         echo "Report tags: $_TAGS"
         /usr/bin/migasfree-tags --communicate $_TAGS
         echo "--------------------------------"
@@ -86,10 +86,10 @@ then
         echo "--------------------------------"
     fi
 else
-    if [ -f $_CHANGE_NODE ]
+    if [ -f "$_CHANGE_NODE" ]
     then
         echo "--------------------------------"
-        echo "Y" | LC_ALL=C migasfree --register
+        echo "Y" | LANGUAGE=C migasfree --register
         echo "Report tags: " $(cat $_CHANGE_NODE)
         /usr/bin/migasfree-tags --communicate $(cat $_CHANGE_NODE) || :
         mv $_CHANGE_NODE $_CHANGE_NODE.save || :
@@ -104,7 +104,7 @@ fi
 # execute postrun scripts
 run_scripts /usr/share/migasfree-launcher/postrun.d
 
-if [ -f $_FIRST ]
+if [ -f "$_FIRST" ]
 then
     mv $_FIRST $_FIRST.save
 fi
