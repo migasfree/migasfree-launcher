@@ -1,0 +1,6 @@
+# http://docs.python.org/distutils/sourcedist.html#the-manifest-in-template
+
+include AUTHORS INSTALL LICENSE README.md VERSION MANIFEST.in
+recursive-include data *
+recursive-include migasfree_indicator *.py
+include i18n/*
