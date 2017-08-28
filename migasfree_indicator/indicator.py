@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright (c) 2013-2016 Alberto Gacías <alberto@migasfree.org>
-# Copyright (c) 2015-2016 Jose Antonio Chavarría <jachavar@gmail.com>
+# Copyright (c) 2013-2017 Alberto Gacías <alberto@migasfree.org>
+# Copyright (c) 2015-2017 Jose Antonio Chavarría <jachavar@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@ __author__ = [
     'Jose Antonio Chavarría <jachavar@gmail.com>'
 ]
 __license__ = 'GPLv3'
-__copyright__ = '(C) 2010-2016 migasfree team'
+__copyright__ = '(C) 2010-2017 migasfree team'
 
 import os
 import sys
@@ -275,10 +275,14 @@ class SystrayIconApp(object):
             '/org/freedesktop/ConsoleKit/Manager '
             'org.freedesktop.ConsoleKit.Manager.Restart'
         else:
-            cmd = 'dbus-send --system --print-reply '
-            '--dest=org.freedesktop.login1 '
-            '/org/freedesktop/login1 '
-            '"org.freedesktop.login1.Manager.Reboot" boolean:true'
+            ret, _, _ = execute('which systemctl')
+            if ret == 0:
+                cmd = 'systemctl reboot -i'
+            else:
+                cmd = 'dbus-send --system --print-reply '
+                '--dest=org.freedesktop.login1 '
+                '/org/freedesktop/login1 '
+                '"org.freedesktop.login1.Manager.Reboot" boolean:true'
 
         execute(cmd, interactive=True, verbose=True)
 
@@ -319,7 +323,7 @@ class SystrayIconApp(object):
     def read_output(self, command):
         self.is_upgrading = True
 
-        GObject.idle_add(self.menu_force_upgrade.set_sensitive,False)
+        GObject.idle_add(self.menu_force_upgrade.set_sensitive, False)
         self.console.timeout_id = GObject.timeout_add(
             50,
             self.console.on_timeout,
